@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BPSC AEDO 2026 — Complete Exam Prep & Answer Key</title>
+  <meta name="description" content="BPSC AEDO 2026 Bihar exam complete answer key, 500+ practice questions with explanations. General Studies, English, Hindi.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Hero Header -->
+  <header class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="badge">BPSC AEDO 2026</div>
+      <h1>बिहार सहायक शिक्षा विकास अधिकारी</h1>
+      <p class="hero-sub">Complete Answer Key + 500 Practice Questions</p>
+    </div>
+  </header>
+
+  <!-- Stats Bar -->
+  <div class="container">
+    <div class="stats-bar" id="statsBar">
+      <div class="stat-item">
+        <div class="stat-icon">📝</div>
+        <div class="stat-num" id="sTotal">500</div>
+        <div class="stat-label">Practice Qs</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">✅</div>
+        <div class="stat-num" id="sAnswered">0</div>
+        <div class="stat-label">Attempted</div>
+      </div>
+      <div class="stat-item correct-stat">
+        <div class="stat-icon">🎯</div>
+        <div class="stat-num" id="sCorrect">0</div>
+        <div class="stat-label">Correct</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">📊</div>
+        <div class="stat-num" id="sAccuracy">—</div>
+        <div class="stat-label">Accuracy</div>
+      </div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+      <span class="progress-text" id="progText">0 / 500</span>
+    </div>
+
+    <!-- Tabs -->
+    <nav class="tabs" id="mainTabs">
+      <button class="tab active" data-tab="ak">📋 GS Answer Key</button>
+      <button class="tab" data-tab="lang">🔤 Language Paper</button>
+      <button class="tab" data-tab="pq">🧠 Practice (500 Qs)</button>
+      <button class="tab" data-tab="test">⏱️ Mock Test</button>
+    </nav>
+
+    <!-- GS Answer Key Section -->
+    <section id="ak" class="section active">
+      <div class="section-header">
+        <h2>General Studies — Answer Key (100 Questions)</h2>
+        <input class="search-input" placeholder="🔍 Search questions, topics..." id="akSearch">
+      </div>
+      <div id="akList" class="card-list"></div>
+    </section>
+
+    <!-- Language Paper Section -->
+    <section id="lang" class="section">
+      <div class="section-header">
+        <h2>Language Paper — English & Hindi (70 Questions)</h2>
+        <input class="search-input" placeholder="🔍 Search language questions..." id="langSearch">
+      </div>
+      <div id="langList" class="card-list"></div>
+    </section>
+
+    <!-- Practice Questions Section -->
+    <section id="pq" class="section">
+      <div class="section-header">
+        <h2>Practice Questions — 500 MCQs</h2>
+      </div>
+      <div class="filter-bar" id="pqFilters"></div>
+      <div id="pqList" class="card-list"></div>
+      <div class="pagination" id="pqPagination"></div>
+    </section>
+
+    <!-- Mock Test Section -->
+    <section id="test" class="section">
+      <div class="test-config" id="testConfig">
+        <h2>⏱️ Take a Mock Test</h2>
+        <p class="test-desc">Simulate exam conditions with timer and scoring</p>
+        <div class="test-options">
+          <div class="test-opt" onclick="startTest(25)">
+            <div class="test-opt-num">25</div>
+            <div class="test-opt-label">Quick Test<br><small>15 min</small></div>
+          </div>
+          <div class="test-opt" onclick="startTest(50)">
+            <div class="test-opt-num">50</div>
+            <div class="test-opt-label">Half Test<br><small>30 min</small></div>
+          </div>
+          <div class="test-opt featured" onclick="startTest(100)">
+            <div class="test-opt-num">100</div>
+            <div class="test-opt-label">Full Test<br><small>60 min</small></div>
+          </div>
+        </div>
+      </div>
+      <div id="testArea" class="test-area" style="display:none;">
+        <div class="test-topbar">
+          <div class="test-timer" id="testTimer">60:00</div>
+          <div class="test-progress" id="testProgress">0/100</div>
+          <button class="btn-submit" id="btnSubmit" onclick="submitTest()">Submit Test</button>
+        </div>
+        <div id="testQuestions" class="card-list"></div>
+      </div>
+      <div id="testResult" class="test-result" style="display:none;"></div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>BPSC AEDO 2026 Exam Preparation — Built for Bihar Aspirants 🇮🇳</p>
+    <p class="footer-small">Data based on BPSC AEDO April 2026 exam papers. For educational purposes only.</p>
+  </footer>
+
+  <script src="data-gs.js"></script>
+  <script src="data-lang.js"></script>
+  <script src="data-practice1.js"></script>
+  <script src="data-practice2.js"></script>
+  <script src="data-practice3.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
