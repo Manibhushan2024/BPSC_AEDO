@@ -1,5 +1,5 @@
 // BPSC AEDO 2026 — Main Application Logic
-const pqData = [...pqData1, ...pqData2, ...pqData3];
+const pqData = [...pqData1, ...pqData2, ...pqData3, ...(typeof pqData4 !== 'undefined' ? pqData4 : [])];
 let answered = 0, correct = 0;
 let currentCat = 'all', currentPage = 1;
 const PER_PAGE = 15;
@@ -32,6 +32,16 @@ function renderCards(data, containerId) {
   data.forEach(item => {
     const d = document.createElement('div');
     d.className = 'card';
+    // If this is an answer-key card and a matching practice question exists, include the option text
+    let optionDisplay = '';
+    if (containerId === 'akList' && typeof item.q === 'number') {
+      const pq = pqData.find(p => p.id === item.q);
+      if (pq && Array.isArray(pq.opts) && typeof pq.ans === 'number') {
+        const optText = pq.opts[pq.ans];
+        optionDisplay = `<div class="ans-option">Option: <strong>${optText}</strong></div>`;
+      }
+    }
+
     d.innerHTML = `<div class="topic-badge">${item.topic}</div>
       <div class="q-header">
         <div class="q-num">Q${item.q}</div>
@@ -40,7 +50,8 @@ function renderCards(data, containerId) {
       <div class="ans-row">
         <div class="ans-badge">✓ ${item.ans}</div>
         <div class="explanation">${item.exp}</div>
-      </div>`;
+      </div>
+      ${optionDisplay}`;
     c.appendChild(d);
   });
 }
