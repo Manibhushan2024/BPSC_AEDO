@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BPSC AEDO 2026 — Complete Exam Prep & Answer Key</title>
-  <meta name="description" content="BPSC AEDO 2026 Bihar exam complete answer key, 500+ practice questions with explanations. General Studies, English, Hindi.">
+  <title>BPSC AEDO 2026 — Complete Exam Prep, Answer Key & Expected Questions</title>
+  <meta name="description" content="BPSC AEDO 2026 Bihar exam complete answer key, 500+ practice questions, 500 most expected PYQ-based questions with Assertion-Reason format. General Studies, English, Hindi.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
@@ -16,7 +16,7 @@
     <div class="hero-content">
       <div class="badge">BPSC AEDO 2026</div>
       <h1>बिहार सहायक शिक्षा विकास अधिकारी</h1>
-      <p class="hero-sub">Complete Answer Key + 500 Practice Questions</p>
+      <p class="hero-sub">Answer Key + 500 Practice + 500 Most Expected Questions</p>
     </div>
   </header>
 
@@ -25,7 +25,7 @@
     <div class="stats-bar" id="statsBar">
       <div class="stat-item">
         <div class="stat-icon">📝</div>
-        <div class="stat-num" id="sTotal">500</div>
+        <div class="stat-num" id="sTotal">1000+</div>
         <div class="stat-label">Practice Qs</div>
       </div>
       <div class="stat-item">
@@ -54,6 +54,7 @@
       <button class="tab active" data-tab="ak">📋 GS Answer Key</button>
       <button class="tab" data-tab="lang">🔤 Language Paper</button>
       <button class="tab" data-tab="pq">🧠 Practice (500 Qs)</button>
+      <button class="tab tab-expected" data-tab="eq">🔥 Most Expected (500)</button>
       <button class="tab" data-tab="test">⏱️ Mock Test</button>
     </nav>
 
@@ -83,6 +84,19 @@
       <div class="filter-bar" id="pqFilters"></div>
       <div id="pqList" class="card-list"></div>
       <div class="pagination" id="pqPagination"></div>
+    </section>
+
+    <!-- Most Expected Questions Section -->
+    <section id="eq" class="section">
+      <div class="section-header">
+        <h2>🔥 Most Expected Questions — 500 PYQ Based MCQs</h2>
+        <div class="eq-meta">Assertion-Reason • Matching • Statement-Based • Current Affairs</div>
+        <input class="search-input" placeholder="🔍 Search expected questions..." id="eqSearch">
+      </div>
+      <div class="eq-type-bar" id="eqTypeBar"></div>
+      <div class="filter-bar" id="eqFilters"></div>
+      <div id="eqList" class="card-list"></div>
+      <div class="pagination" id="eqPagination"></div>
     </section>
 
     <!-- Mock Test Section -->
@@ -128,6 +142,8 @@
   <script src="data-practice1.js"></script>
   <script src="data-practice2.js"></script>
   <script src="data-practice3.js"></script>
+  <script src="data-expected1.js"></script>
+  <script src="data-expected2.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
