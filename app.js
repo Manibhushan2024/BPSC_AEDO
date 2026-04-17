@@ -1,10 +1,12 @@
 // BPSC AEDO 2026 — Main Application Logic
 const pqData = [...pqData1, ...pqData2, ...pqData3, ...(typeof pqData4 !== 'undefined' ? pqData4 : [])];
 const eqData = [...(typeof eqData1 !== 'undefined' ? eqData1 : []), ...(typeof eqData2 !== 'undefined' ? eqData2 : [])];
-const allTestData = [...pqData, ...eqData];
+const mathData = [...(typeof mathData1 !== 'undefined' ? mathData1 : []), ...(typeof mathData2 !== 'undefined' ? mathData2 : [])];
+const allTestData = [...pqData, ...eqData, ...mathData];
 let answered = 0, correct = 0;
 let currentCat = 'all', currentPage = 1;
 let eqCat = 'all', eqPage = 1, eqSearch = '';
+let mathCat = 'all', mathPage = 1, mathSearch = '';
 const PER_PAGE = 15;
 let testTimer = null, testSeconds = 0, testQs = [], testAnswers = {};
 
@@ -18,6 +20,7 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.getElementById(target).classList.add('active');
     if (target === 'pq') renderPQ();
     if (target === 'eq') renderEQ();
+    if (target === 'math') renderMath();
   });
 });
 
@@ -454,5 +457,98 @@ function renderEQPagination(pages, total) {
   next.textContent = 'Next →';
   next.disabled = eqPage >= pages;
   next.onclick = () => { if (eqPage < pages) { eqPage++; renderEQCards(); window.scrollTo(0, document.getElementById('eq').offsetTop - 80); } };
+  pg.appendChild(next);
+}
+
+// ═══ MATH & REASONING SECTION ═══
+document.getElementById('mathSearch').addEventListener('input', e => { mathSearch = e.target.value.toLowerCase(); mathPage = 1; renderMathCards(); });
+
+function renderMath() {
+  const fRow = document.getElementById('mathFilters');
+  if (!fRow.children.length) {
+    const cats = ['all', ...new Set(mathData.map(q => q.cat))];
+    cats.forEach(cat => {
+      const b = document.createElement('button');
+      b.className = 'filter-btn' + (cat === 'all' ? ' on' : '');
+      b.textContent = cat === 'all' ? '📚 All Topics' : cat;
+      b.onclick = () => {
+        mathCat = cat; mathPage = 1;
+        document.querySelectorAll('#mathFilters .filter-btn').forEach(x => x.classList.remove('on'));
+        b.classList.add('on');
+        renderMathCards();
+      };
+      fRow.appendChild(b);
+    });
+  }
+  renderMathCards();
+}
+
+function renderMathCards() {
+  let filtered = mathData.filter(q => {
+    const matchCat = mathCat === 'all' || q.cat === mathCat;
+    const matchSearch = !mathSearch || q.q.toLowerCase().includes(mathSearch) || q.cat.toLowerCase().includes(mathSearch) || q.exp.toLowerCase().includes(mathSearch);
+    return matchCat && matchSearch;
+  });
+  const total = filtered.length;
+  const pages = Math.ceil(total / PER_PAGE);
+  if (mathPage > pages) mathPage = 1;
+  const slice = filtered.slice((mathPage - 1) * PER_PAGE, mathPage * PER_PAGE);
+  const c = document.getElementById('mathList');
+  c.innerHTML = '';
+  slice.forEach(q => {
+    const safeId = q.id.replace(/[^a-zA-Z0-9]/g, '_');
+    const d = document.createElement('div');
+    d.className = 'pq-card';
+    d.id = `math_card_${safeId}`;
+    d.innerHTML = `<div class="topic-badge">${q.cat}</div>
+      <div class="pq-text"><span class="q-label">${q.id}.</span> ${q.q.split('\n').map((line, li) => li === 0 ? line : `<span class="q-sub">${line}</span>`).join('<br>')}</div>
+      <div class="opts" id="math_opts_${safeId}">
+        ${q.opts.map((o, i) => `<div class="opt" onclick="selectMathOpt('${safeId}',${i},${q.ans})">${o}</div>`).join('')}
+      </div>
+      <div class="pq-exp" id="math_exp_${safeId}">💡 ${q.exp}</div>`;
+    c.appendChild(d);
+  });
+  renderMathPagination(pages, total);
+}
+
+function selectMathOpt(safeId, chosen, correctIdx) {
+  const card = document.getElementById('math_card_' + safeId);
+  if (card.dataset.answered) return;
+  card.dataset.answered = '1';
+  const opts = document.querySelectorAll(`#math_opts_${safeId} .opt`);
+  opts.forEach(o => o.classList.add('disabled'));
+  opts[chosen].classList.add(chosen === correctIdx ? 'correct' : 'wrong');
+  if (chosen !== correctIdx) opts[correctIdx].classList.add('show-correct');
+  document.getElementById('math_exp_' + safeId).classList.add('show');
+  answered++;
+  if (chosen === correctIdx) correct++;
+  updateStats();
+}
+
+function renderMathPagination(pages, total) {
+  const pg = document.getElementById('mathPagination');
+  pg.innerHTML = '';
+  if (pages <= 1) return;
+  const prev = document.createElement('button');
+  prev.className = 'page-btn'; prev.textContent = '← Prev'; prev.disabled = mathPage <= 1;
+  prev.onclick = () => { if (mathPage > 1) { mathPage--; renderMathCards(); window.scrollTo(0, document.getElementById('math').offsetTop - 80); } };
+  pg.appendChild(prev);
+  const maxBtns = 5;
+  let start = Math.max(1, mathPage - 2);
+  let end = Math.min(pages, start + maxBtns - 1);
+  if (end - start < maxBtns - 1) start = Math.max(1, end - maxBtns + 1);
+  for (let i = start; i <= end; i++) {
+    const b = document.createElement('button');
+    b.className = 'page-btn' + (i === mathPage ? ' active' : '');
+    b.textContent = i;
+    b.onclick = () => { mathPage = i; renderMathCards(); window.scrollTo(0, document.getElementById('math').offsetTop - 80); };
+    pg.appendChild(b);
+  }
+  const info = document.createElement('span');
+  info.className = 'page-info'; info.textContent = `${total} questions`;
+  pg.appendChild(info);
+  const next = document.createElement('button');
+  next.className = 'page-btn'; next.textContent = 'Next →'; next.disabled = mathPage >= pages;
+  next.onclick = () => { if (mathPage < pages) { mathPage++; renderMathCards(); window.scrollTo(0, document.getElementById('math').offsetTop - 80); } };
   pg.appendChild(next);
 }
