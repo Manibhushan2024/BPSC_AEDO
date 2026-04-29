@@ -58,6 +58,16 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
 .search-input::placeholder{color:var(--text3)}
 
+/* Search + Download row */
+.search-dl-row{display:flex;gap:10px;align-items:center}
+.search-dl-row .search-input{flex:1}
+
+/* Download PDF Button */
+.btn-download{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;background:linear-gradient(135deg,#065f46,#059669);border:none;border-radius:var(--radius-sm);color:#fff;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s;font-family:var(--font);box-shadow:0 2px 10px rgba(5,150,105,.3)}
+.btn-download:hover{background:linear-gradient(135deg,#047857,#10b981);transform:translateY(-1px);box-shadow:0 4px 16px rgba(5,150,105,.4)}
+.btn-download:active{transform:translateY(0)}
+.section-header .btn-download{margin-top:8px}
+
 /* Cards */
 .card-list{display:flex;flex-direction:column;gap:10px}
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;transition:border-color .2s;animation:fadeIn .3s ease}

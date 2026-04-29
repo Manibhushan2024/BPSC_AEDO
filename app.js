@@ -653,3 +653,140 @@ function renderCGLPagination(pages, total) {
   nextBtn.onclick = () => { if (cglPage < pages) { cglPage++; renderCGLCards(); window.scrollTo(0, document.getElementById('cgl').offsetTop - 80); } };
   pg.appendChild(nextBtn);
 }
+
+// ═══════════════════════════════════════════
+// PDF PRINT / DOWNLOAD FEATURE
+// ═══════════════════════════════════════════
+
+function printAsPDF(questions, title, subtitle) {
+  if (!questions || questions.length === 0) {
+    alert('कोई प्रश्न नहीं मिला! / No questions found for current filter.'); return;
+  }
+  const L = ['A','B','C','D'];
+
+  let qHtml = '';
+  questions.forEach((q, i) => {
+    const parts = (q.q || q.text || '').split('\n');
+    const hi = parts[0] || '';
+    const en = parts[1] || '';
+    qHtml += `<div class="qb">
+      <div class="qn">Q${i+1}. <span class="qid">[${q.id || (i+1)}]</span><span class="qcat">${q.cat || ''}</span></div>
+      <div class="qt">${hi}</div>
+      ${en ? `<div class="qe">${en}</div>` : ''}
+      <div class="opts4">
+        ${(q.opts||[]).map(o=>`<div class="o4">${o}</div>`).join('')}
+      </div>
+    </div>`;
+  });
+
+  let akHtml = `<div class="pg-break"></div>
+  <div class="ak-sec">
+    <h2 class="ak-h">&#10003; Answer Key &nbsp;/&nbsp; उत्तर कुंजी</h2>
+    <p class="ak-sub">${title} — ${questions.length} Questions</p>
+    <table class="akt">
+      <thead><tr><th>Q.No</th><th>ID</th><th>Category</th><th>Correct Answer</th></tr></thead>
+      <tbody>`;
+  questions.forEach((q, i) => {
+    const ai = q.ans;
+    const al = L[ai] || '?';
+    const at = (q.opts||[])[ai] || '';
+    akHtml += `<tr><td>Q${i+1}</td><td>${q.id||''}</td><td>${q.cat||''}</td><td><b>${al}.</b> ${at}</td></tr>`;
+  });
+  akHtml += `</tbody></table></div>`;
+
+  const html = `<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>${title}</title>
+<style>
+@page{size:A4;margin:12mm 10mm}
+*{box-sizing:border-box}
+body{font-family:Arial,sans-serif;font-size:10.5pt;color:#000;margin:0;padding:0}
+.cover{text-align:center;padding:60mm 20mm;border-bottom:3px solid #1a237e}
+.cover h1{font-size:18pt;color:#1a237e;margin-bottom:8px}
+.cover .csub{font-size:12pt;color:#37474f;margin-bottom:6px}
+.cover .cmeta{font-size:10pt;color:#555;margin-top:18px;line-height:1.8}
+.cover .ccount{font-size:22pt;font-weight:bold;color:#c62828;margin:12px 0}
+.pg-break{page-break-after:always}
+.sec-head{font-size:13pt;font-weight:bold;color:#1a237e;border-bottom:2px solid #1a237e;padding:4px 0;margin:6px 0 12px}
+.qb{margin-bottom:11px;padding:6px 4px 8px;border-bottom:1px dashed #ccc;page-break-inside:avoid}
+.qn{font-weight:bold;font-size:9.5pt;color:#333;margin-bottom:2px}
+.qid{font-weight:normal;font-size:8.5pt;color:#888;margin-right:4px}
+.qcat{font-size:8pt;background:#e8eaf6;color:#3949ab;padding:1px 6px;border-radius:10px;margin-left:6px;font-weight:normal}
+.qt{font-size:10.5pt;font-weight:500;margin:2px 0}
+.qe{font-size:9.5pt;color:#444;margin:1px 0 4px}
+.opts4{display:grid;grid-template-columns:1fr 1fr;gap:1px 12px;margin-top:3px}
+.o4{font-size:9.5pt;padding:1px 4px;color:#222}
+.ak-sec{margin-top:8px}
+.ak-h{text-align:center;font-size:15pt;color:#1a237e;margin-bottom:4px}
+.ak-sub{text-align:center;font-size:10pt;color:#555;margin-bottom:12px}
+.akt{width:100%;border-collapse:collapse;font-size:9pt}
+.akt thead tr{background:#1a237e;color:#fff}
+.akt th{padding:5px 7px;text-align:left;font-weight:600}
+.akt td{border:1px solid #ccc;padding:3px 6px}
+.akt tr:nth-child(even) td{background:#f5f5f5}
+.akt td:first-child,.akt td:nth-child(2){text-align:center;font-weight:bold;white-space:nowrap}
+.footer{text-align:center;font-size:8pt;color:#aaa;margin-top:14px;border-top:1px solid #eee;padding-top:6px}
+@media print{.pg-break{page-break-after:always}.qb{page-break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="cover">
+  <h1>${title}</h1>
+  <div class="csub">${subtitle || 'BPSC AEDO / BSSC CGL Exam Preparation'}</div>
+  <div class="ccount">${questions.length} Questions</div>
+  <div class="cmeta">
+    &#128197; Generated: ${new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}<br>
+    &#127760; bpsc-aedo-app.vercel.app<br>
+    <i>For Educational Purposes Only</i>
+  </div>
+</div>
+<div class="pg-break"></div>
+<div class="sec-head">&#128221; Questions / प्रश्न</div>
+${qHtml}
+${akHtml}
+<div class="footer">BPSC AEDO / Bihar CGL Exam Preparation &mdash; Educational Use Only &mdash; bpsc-aedo-app.vercel.app</div>
+<script>setTimeout(function(){window.print();},600);</script>
+</body></html>`;
+
+  const w = window.open('','_blank','width=900,height=700,scrollbars=yes');
+  if (!w) { alert('Pop-up blocked! Please allow pop-ups for this site.'); return; }
+  w.document.write(html);
+  w.document.close();
+}
+
+function downloadCGLPDF() {
+  const filtered = cglData.filter(q => {
+    const mc = cglCat === 'all' || q.cat === cglCat;
+    const ms = !cglSearch || q.q.toLowerCase().includes(cglSearch) || q.cat.toLowerCase().includes(cglSearch);
+    return mc && ms;
+  });
+  const label = cglCat === 'all' ? '500 Most Expected Questions' : cglCat;
+  printAsPDF(filtered, 'Bihar CGL — ' + label, 'BSSC CGL Exam — GK • Science • Math • Reasoning');
+}
+
+function downloadPQPDF() {
+  const filtered = currentCat === 'all' ? pqData : pqData.filter(q => q.cat === currentCat);
+  const label = currentCat === 'all' ? '500 Practice Questions' : currentCat;
+  printAsPDF(filtered, 'BPSC AEDO Practice — ' + label, 'General Studies • Bihar GK • Environment • Polity');
+}
+
+function downloadEQPDF() {
+  const activeType = document.querySelector('.type-btn.on')?.dataset.type || 'All';
+  let filtered = eqData;
+  if (eqCat !== 'all') filtered = filtered.filter(q => q.cat === eqCat);
+  if (activeType !== 'All') filtered = filtered.filter(q => getEQTypeTag(q) === activeType);
+  if (eqSearch) filtered = filtered.filter(q => (q.q||'').toLowerCase().includes(eqSearch) || (q.cat||'').toLowerCase().includes(eqSearch));
+  const label = eqCat === 'all' ? '500 Most Expected Questions' : eqCat;
+  printAsPDF(filtered, 'BPSC AEDO Most Expected — ' + label, 'Assertion-Reason • Matching • Statement-Based • Current Affairs');
+}
+
+function downloadMathPDF() {
+  const filtered = mathData.filter(q => {
+    const mc = mathCat === 'all' || q.cat === mathCat;
+    const ms = !mathSearch || q.q.toLowerCase().includes(mathSearch) || q.cat.toLowerCase().includes(mathSearch);
+    return mc && ms;
+  });
+  const label = mathCat === 'all' ? '300 Questions' : mathCat;
+  printAsPDF(filtered, 'Math & Reasoning — ' + label, 'Number System • Percentage • Ratio • Algebra • Mensuration • Reasoning');
+}

@@ -82,6 +82,7 @@
     <section id="pq" class="section">
       <div class="section-header">
         <h2>Practice Questions — 500 MCQs</h2>
+        <button class="btn-download" onclick="downloadPQPDF()">📥 Download PDF</button>
       </div>
       <div class="filter-bar" id="pqFilters"></div>
       <div id="pqList" class="card-list"></div>
@@ -93,7 +94,10 @@
       <div class="section-header">
         <h2>🔥 Most Expected Questions — 500 PYQ Based MCQs</h2>
         <div class="eq-meta">Assertion-Reason • Matching • Statement-Based • Current Affairs</div>
-        <input class="search-input" placeholder="🔍 Search expected questions..." id="eqSearch">
+        <div class="search-dl-row">
+          <input class="search-input" placeholder="🔍 Search expected questions..." id="eqSearch">
+          <button class="btn-download" onclick="downloadEQPDF()">📥 Download PDF</button>
+        </div>
       </div>
       <div class="eq-type-bar" id="eqTypeBar"></div>
       <div class="filter-bar" id="eqFilters"></div>
@@ -106,7 +110,10 @@
       <div class="section-header">
         <h2>🔢 Math & Reasoning — 300 Most Expected MCQs</h2>
         <div class="eq-meta">Number System • Simplification • Percentage • Ratio • Average • P&L • SI/CI</div>
-        <input class="search-input" placeholder="🔍 Search math questions..." id="mathSearch">
+        <div class="search-dl-row">
+          <input class="search-input" placeholder="🔍 Search math questions..." id="mathSearch">
+          <button class="btn-download" onclick="downloadMathPDF()">📥 Download PDF</button>
+        </div>
       </div>
       <div class="filter-bar" id="mathFilters"></div>
       <div id="mathList" class="card-list"></div>
@@ -118,7 +125,10 @@
       <div class="section-header">
         <h2>🏆 Bihar CGL — 500 Most Expected MCQs</h2>
         <div class="eq-meta">Bihar GK • History • Geography • Polity • Economy • General Science • Math • Reasoning</div>
-        <input class="search-input" placeholder="🔍 Search Bihar CGL questions..." id="cglSearch">
+        <div class="search-dl-row">
+          <input class="search-input" placeholder="🔍 Search Bihar CGL questions..." id="cglSearch">
+          <button class="btn-download" onclick="downloadCGLPDF()">📥 Download PDF</button>
+        </div>
       </div>
       <div class="filter-bar" id="cglFilters"></div>
       <div id="cglList" class="card-list"></div>
