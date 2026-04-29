@@ -2,7 +2,14 @@
 const pqData = [...pqData1, ...pqData2, ...pqData3, ...(typeof pqData4 !== 'undefined' ? pqData4 : [])];
 const eqData = [...(typeof eqData1 !== 'undefined' ? eqData1 : []), ...(typeof eqData2 !== 'undefined' ? eqData2 : [])];
 const mathData = [...(typeof mathData1 !== 'undefined' ? mathData1 : []), ...(typeof mathData2 !== 'undefined' ? mathData2 : [])];
-const allTestData = [...pqData, ...eqData, ...mathData];
+const cglData = [
+  ...(typeof cglData1 !== 'undefined' ? cglData1 : []),
+  ...(typeof cglData2 !== 'undefined' ? cglData2 : []),
+  ...(typeof cglData3 !== 'undefined' ? cglData3 : []),
+  ...(typeof cglData4 !== 'undefined' ? cglData4 : [])
+];
+const allTestData = [...pqData, ...eqData, ...mathData, ...cglData];
+let cglCat = 'all', cglPage = 1, cglSearch = '';
 let answered = 0, correct = 0;
 let currentCat = 'all', currentPage = 1;
 let eqCat = 'all', eqPage = 1, eqSearch = '';
@@ -21,6 +28,7 @@ document.querySelectorAll('.tab').forEach(tab => {
     if (target === 'pq') renderPQ();
     if (target === 'eq') renderEQ();
     if (target === 'math') renderMath();
+    if (target === 'cgl') renderCGL();
   });
 });
 
@@ -551,4 +559,97 @@ function renderMathPagination(pages, total) {
   next.className = 'page-btn'; next.textContent = 'Next →'; next.disabled = mathPage >= pages;
   next.onclick = () => { if (mathPage < pages) { mathPage++; renderMathCards(); window.scrollTo(0, document.getElementById('math').offsetTop - 80); } };
   pg.appendChild(next);
+}
+
+// ═══ BIHAR CGL SECTION ═══
+document.getElementById('cglSearch').addEventListener('input', e => { cglSearch = e.target.value.toLowerCase(); cglPage = 1; renderCGLCards(); });
+
+function renderCGL() {
+  const fRow = document.getElementById('cglFilters');
+  if (!fRow.children.length) {
+    const cats = ['all', ...new Set(cglData.map(q => q.cat))];
+    cats.forEach(cat => {
+      const b = document.createElement('button');
+      b.className = 'filter-btn' + (cat === 'all' ? ' on' : '');
+      b.textContent = cat === 'all' ? '📚 All Topics' : cat;
+      b.onclick = () => {
+        cglCat = cat; cglPage = 1;
+        document.querySelectorAll('#cglFilters .filter-btn').forEach(x => x.classList.remove('on'));
+        b.classList.add('on');
+        renderCGLCards();
+      };
+      fRow.appendChild(b);
+    });
+  }
+  renderCGLCards();
+}
+
+function renderCGLCards() {
+  let filtered = cglData.filter(q => {
+    const matchCat = cglCat === 'all' || q.cat === cglCat;
+    const matchSearch = !cglSearch || q.q.toLowerCase().includes(cglSearch) || q.cat.toLowerCase().includes(cglSearch) || (q.exp && q.exp.toLowerCase().includes(cglSearch));
+    return matchCat && matchSearch;
+  });
+  const total = filtered.length;
+  const pages = Math.ceil(total / PER_PAGE);
+  if (cglPage > pages) cglPage = 1;
+  const slice = filtered.slice((cglPage - 1) * PER_PAGE, cglPage * PER_PAGE);
+  const c = document.getElementById('cglList');
+  c.innerHTML = '';
+  slice.forEach(q => {
+    const safeId = q.id.replace(/[^a-zA-Z0-9]/g, '_');
+    const d = document.createElement('div');
+    d.className = 'pq-card';
+    d.id = `cgl_card_${safeId}`;
+    d.innerHTML = `<div class="topic-badge">${q.cat}</div>
+      <div class="pq-text"><span class="q-label">${q.id}.</span> ${q.q.split('\n').map((line, li) => li === 0 ? line : `<span class="q-sub">${line}</span>`).join('<br>')}</div>
+      <div class="opts" id="cgl_opts_${safeId}">
+        ${q.opts.map((o, i) => `<div class="opt" onclick="selectCGLOpt('${safeId}',${i},${q.ans})">${o}</div>`).join('')}
+      </div>
+      <div class="pq-exp" id="cgl_exp_${safeId}">💡 ${q.exp}</div>`;
+    c.appendChild(d);
+  });
+  renderCGLPagination(pages, total);
+}
+
+function selectCGLOpt(safeId, chosen, correctIdx) {
+  const card = document.getElementById('cgl_card_' + safeId);
+  if (card.dataset.answered) return;
+  card.dataset.answered = '1';
+  const opts = document.querySelectorAll(`#cgl_opts_${safeId} .opt`);
+  opts.forEach(o => o.classList.add('disabled'));
+  opts[chosen].classList.add(chosen === correctIdx ? 'correct' : 'wrong');
+  if (chosen !== correctIdx) opts[correctIdx].classList.add('show-correct');
+  document.getElementById('cgl_exp_' + safeId).classList.add('show');
+  answered++;
+  if (chosen === correctIdx) correct++;
+  updateStats();
+}
+
+function renderCGLPagination(pages, total) {
+  const pg = document.getElementById('cglPagination');
+  pg.innerHTML = '';
+  if (pages <= 1) return;
+  const prev = document.createElement('button');
+  prev.className = 'page-btn'; prev.textContent = '← Prev'; prev.disabled = cglPage <= 1;
+  prev.onclick = () => { if (cglPage > 1) { cglPage--; renderCGLCards(); window.scrollTo(0, document.getElementById('cgl').offsetTop - 80); } };
+  pg.appendChild(prev);
+  const maxBtns = 5;
+  let start = Math.max(1, cglPage - 2);
+  let end = Math.min(pages, start + maxBtns - 1);
+  if (end - start < maxBtns - 1) start = Math.max(1, end - maxBtns + 1);
+  for (let i = start; i <= end; i++) {
+    const b = document.createElement('button');
+    b.className = 'page-btn' + (i === cglPage ? ' active' : '');
+    b.textContent = i;
+    b.onclick = () => { cglPage = i; renderCGLCards(); window.scrollTo(0, document.getElementById('cgl').offsetTop - 80); };
+    pg.appendChild(b);
+  }
+  const info = document.createElement('span');
+  info.className = 'page-info'; info.textContent = `${total} questions`;
+  pg.appendChild(info);
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'page-btn'; nextBtn.textContent = 'Next →'; nextBtn.disabled = cglPage >= pages;
+  nextBtn.onclick = () => { if (cglPage < pages) { cglPage++; renderCGLCards(); window.scrollTo(0, document.getElementById('cgl').offsetTop - 80); } };
+  pg.appendChild(nextBtn);
 }
