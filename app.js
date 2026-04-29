@@ -6,7 +6,11 @@ const cglData = [
   ...(typeof cglData1 !== 'undefined' ? cglData1 : []),
   ...(typeof cglData2 !== 'undefined' ? cglData2 : []),
   ...(typeof cglData3 !== 'undefined' ? cglData3 : []),
-  ...(typeof cglData4 !== 'undefined' ? cglData4 : [])
+  ...(typeof cglData4 !== 'undefined' ? cglData4 : []),
+  ...(typeof cglData5 !== 'undefined' ? cglData5 : []),
+  ...(typeof cglData6 !== 'undefined' ? cglData6 : []),
+  ...(typeof cglData7 !== 'undefined' ? cglData7 : []),
+  ...(typeof cglData8 !== 'undefined' ? cglData8 : [])
 ];
 const allTestData = [...pqData, ...eqData, ...mathData, ...cglData];
 let cglCat = 'all', cglPage = 1, cglSearch = '';
